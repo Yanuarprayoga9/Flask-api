@@ -38,8 +38,8 @@ See api docs
 
 <!-- (BONUS) CREATE API FOR EMPLOYEE CRUD IMPLEMENTATION -->
 - POST /create_employee
-request body:
 ``` json
+request body:
 {
   "name": "EMP-0004",
   "first_name": "Mike",
@@ -52,8 +52,8 @@ request body:
 
 
 - PUT /update_employee
-request body:
 ``` json
+request body:
 {
     "name": "EMP-0003",
   "company": "Company 3"
