@@ -11,7 +11,7 @@ pip install Flask Flask-Caching
 Start Dev
 
 ```bash
-phyton main.py
+phyton app.py
 ```
 
 
