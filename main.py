@@ -39,6 +39,8 @@ def get_list_employee():
 def get_employee_detail(employee_name):
     return employee_detail_list[employee_name]
 
+
+# CRUD UNIT
 def create_new_company(company_dict):
     assert 'name' in company_dict
     assert 'domain' in company_dict
@@ -55,21 +57,7 @@ def delete_company(company_name):
     global company_name_list
     company_name_list = [x for x in get_list_company() if x['name'] != company_name]
 
-def create_new_employee(employee_dict):
-    assert 'name' in employee_dict
-    assert 'first_name' in employee_dict
-    assert 'last_name' in employee_dict
-    assert 'full_name' in employee_dict
-    assert 'company' in employee_dict
 
-    employee_name_list.append({'name': employee_dict['full_name']})
-    employee_detail_list[employee_dict['full_name']] = {
-        'name': employee_dict['name'],
-        'first_name': employee_dict['first_name'],
-        'last_name': employee_dict['last_name'],
-        'full_name': employee_dict['full_name'],
-        'company': employee_dict['company']
-    }
 
 def update_employee(employee_dict):
     assert 'name' in employee_dict
@@ -103,6 +91,20 @@ def delete_attendance(attendance_name):
     global attendance_list
     attendance_list = [att for att in attendance_list if att['name'] != attendance_name]
 
+def get_employees_with_domains():
+    employees = get_list_employee()
+    result = []
+    for emp in employees:
+        emp_detail = get_employee_detail(emp['name'])
+        company_detail = get_company_detail(emp_detail['company'])
+        result.append({
+            "full_name": emp_detail['full_name'],
+            "company": emp_detail['company'],
+            "domain": company_detail['domain']
+        })
+    return result
+# ///////////////////////////////////// SOLUTION STARTED /////////////////////////////////
+# ////////////////////////////////////////////////////////////////////////////////////////
 
 # Task 1 Get the list of all companies and sort by company name in reverse order.
 def task_1():
@@ -113,6 +115,8 @@ def task_1():
 # Call the function and print the result
 task_1_result = task_1()
 print(task_1_result)
+
+
 
 # Task 2
 # Print all domain values in every company.
@@ -125,6 +129,9 @@ def task_2():
 
 # Call the function
 task_2()
+
+
+
 
 # Task 3
 # List all employees working in Company 2.
@@ -153,7 +160,7 @@ def employees_with_domains():
             "company": emp_detail['company'],
             "domain": company_detail['domain']
         })
-    return jsonify(result)
+    return jsonify(employees_with_domains())
 
 # Task 5 API
 @app.route('/api/companies_with_employees', methods=['GET'])
@@ -175,14 +182,33 @@ def companies_with_employees():
 @app.route('/api/create_employee', methods=['POST'])
 def create_employee():
     employee_data = request.json
+
+    def create_new_employee(employee_dict):
+        assert 'name' in employee_dict
+        assert 'first_name' in employee_dict
+        assert 'last_name' in employee_dict
+        assert 'full_name' in employee_dict
+        assert 'company' in employee_dict
+
+        employee_name_list.append({'name': employee_dict['full_name']})
+        employee_detail_list[employee_dict['full_name']] = {
+            'name': employee_dict['name'],
+            'first_name': employee_dict['first_name'],
+            'last_name': employee_dict['last_name'],
+            'full_name': employee_dict['full_name'],
+            'company': employee_dict['company']
+        }
+       
     create_new_employee(employee_data)
-    return jsonify({"message": "Employee created successfully"}), 201
+    all_employees_list = get_employees_with_domains()
+    return jsonify({"message": "Employee created successfully","employees": all_employees_list}), 201
 
 @app.route('/api/update_employee', methods=['PUT'])
 def update_employee_api():
     employee_data = request.json
     update_employee(employee_data)
-    return jsonify({"message": "Employee updated successfully"}), 200
+    all_employees_list = get_list_employee()
+    return jsonify({"message": "Employee Updated successfully","employees": all_employees_list}), 201
 
 @app.route('/api/delete_employee/<string:employee_name>', methods=['DELETE'])
 def delete_employee_api(employee_name):
