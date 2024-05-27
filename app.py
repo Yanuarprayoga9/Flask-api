@@ -103,6 +103,9 @@ def get_employees_with_domains():
             "domain": company_detail['domain']
         })
     return result
+
+
+
 # ///////////////////////////////////// SOLUTION STARTED /////////////////////////////////
 # ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -111,10 +114,8 @@ def task_1():
     company_list = get_list_company()
     sorted_company_list = sorted(company_list, key=lambda x: x['name'], reverse=True)
     return sorted_company_list
-
-# Call the function and print the result
 task_1_result = task_1()
-print(task_1_result)
+print("task 1",task_1_result)
 
 
 
@@ -122,15 +123,14 @@ print(task_1_result)
 # Print all domain values in every company.
 def task_2():
     company_list = get_list_company()
+    result = []
     for company in company_list:
         company_name = company['name']
         company_detail = get_company_detail(company_name)
-        print(f"{company_name}: {company_detail['domain']}")
-
+        result.append(f"{company_name}: {company_detail['domain']}")
+    return result
 # Call the function
-task_2()
-
-
+print("task 2",task_2())
 
 
 # Task 3
@@ -141,8 +141,7 @@ def task_3():
     return company_2_employees
 
 # Call the function and print the result
-task_3_result = task_3()
-print(task_3_result)
+print("task 3",task_3())
 
 
 
@@ -160,7 +159,7 @@ def employees_with_domains():
             "company": emp_detail['company'],
             "domain": company_detail['domain']
         })
-    return jsonify(employees_with_domains())
+    return jsonify(result)
 
 # Task 5 API
 @app.route('/api/companies_with_employees', methods=['GET'])
@@ -214,19 +213,69 @@ def update_employee_api():
 def delete_employee_api(employee_name):
     delete_employee(employee_name)
     all_employees_list = get_employees_with_domains()
-    return jsonify({"message": "Employee deleted successfully","employees": all_employees_list}), 201
+    return jsonify({"message":employee_name +" deleted successfully","employees": all_employees_list}), 201
 
-# Bonus Task 2: Employee Attendance CRUD Operations
-@app.route('/api/create_attendance', methods=['POST'])
-def create_attendance():
-    attendance_data = request.json
-    create_new_attendance(attendance_data)
-    return jsonify({"message": "Attendance created successfully"}), 201
+# Bonus Task 2: Create a new structure for Employee Attendance.
+# You will be able to **list all available Employee Attendances**,
+# **add new Employee Attendance** and **delete existing Employee Attendance**. 
+# You can have a look at the available functions above and create a similar one for this.
+# Struktur data untuk menyimpan kehadiran karyawan
 
-@app.route('/api/delete_attendance/<string:attendance_name>', methods=['DELETE'])
-def delete_attendance_api(attendance_name):
-    delete_attendance(attendance_name)
-    return jsonify({"message": "Attendance deleted successfully"}), 200
+
+# Create attendance list
+def create_new_attendance(attendance_dict):
+    assert 'name' in attendance_dict
+    assert 'employee' in attendance_dict
+    assert 'attendance_date' in attendance_dict
+    assert 'company' in attendance_dict
+    assert 'status' in attendance_dict
+
+    attendance_list.append({
+        'name': attendance_dict['name'],
+        'employee': attendance_dict['employee'],
+        'attendance_date': attendance_dict['attendance_date'],
+        'company': attendance_dict['company'],
+        'status': attendance_dict['status']
+    })
+
+# Delete attendance
+def delete_attendance(attendance_name):
+    global attendance_list
+    attendance_list = [att for att in attendance_list if att['name'] != attendance_name]
+
+# create attendance example
+create_new_attendance({
+    "name": "ATT-2022-00001",
+    "employee": "EMP-0001",
+    "attendance_date": "2022-01-01",
+    "company": "Company 1",
+    "status": "Present"
+})
+create_new_attendance({
+    "name": "ATT-2022-00002",
+    "employee": "EMP-0002",
+    "attendance_date": "2022-01-01",
+    "company": "Company 2",
+    "status": "Half Day"
+})
+create_new_attendance({
+    "name": "ATT-2022-00003",
+    "employee": "EMP-0003",
+    "attendance_date": "2022-01-01",
+    "company": "Company 2",
+    "status": "Present"
+})
+
+# get all attendances
+all_attendances = get_list_attendance()
+print("bonus task 2 attendance",all_attendances)
+
+# Delete attendance
+delete_attendance("ATT-2022-00002")
+
+# get all attendances
+all_attendances = get_list_attendance()
+print("bonus task 2 attendance",all_attendances)
 
 # Run the Flask app
 if __name__ == '__main__':
