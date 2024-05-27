@@ -22,8 +22,11 @@ phyton main.py
 - Task 3 complete 
 ![alt text](image-2.png)
 - Task 4 complete 
+![alt text](image-5.png)
 - Task 5 complete 
+![alt text](image-4.png) 
 - Task Bonus Complete
+See api docs
 - Task Bonus 2 Complete
 ![alt text](image-3.png)
 
