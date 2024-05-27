@@ -207,13 +207,14 @@ def create_employee():
 def update_employee_api():
     employee_data = request.json
     update_employee(employee_data)
-    all_employees_list = get_list_employee()
-    return jsonify({"message": "Employee Updated successfully","employees": all_employees_list}), 201
+    all_employees_list = get_employees_with_domains()
+    return jsonify({"message": "Employee updated successfully","employees": all_employees_list}), 201
 
 @app.route('/api/delete_employee/<string:employee_name>', methods=['DELETE'])
 def delete_employee_api(employee_name):
     delete_employee(employee_name)
-    return jsonify({"message": "Employee deleted successfully"}), 200
+    all_employees_list = get_employees_with_domains()
+    return jsonify({"message": "Employee deleted successfully","employees": all_employees_list}), 201
 
 # Bonus Task 2: Employee Attendance CRUD Operations
 @app.route('/api/create_attendance', methods=['POST'])
